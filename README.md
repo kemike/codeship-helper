@@ -6,6 +6,7 @@ Source image:
 Features:  
 - AWS cli  #AWS cli access
 - Kubectl  #kubectl access
+- Helm  #helm access
 - aws-authenticator  #for ECR push
 - ensubstvars_helper.sh  #helper script for build time envsubst based operations
 
