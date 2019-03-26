@@ -13,8 +13,8 @@ Features:
 # Kubectl configuration
 - https://github.com/codeship-library/kubectl  
 
-To enable using kubectl in CodeshipPro builds kubectl configuration must be accessible. It can be passsed
-to the container via encrypted variables in codeship-services.yaml.
+To enable using kubectl for AWS cluster in CodeshipPro builds kubectl configuration must be accessible.
+It can be passed together with AWS credentials for aws-authenticator in the container via encrypted variables in codeship-services.yaml.
 
 Setting up encrypted kubectl config for codeship deployments:  
 ```
