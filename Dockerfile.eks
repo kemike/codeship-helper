@@ -1,0 +1,40 @@
+FROM ruby:bullseye
+
+ARG KUBECTL_VERSION="1.10.3"
+ARG KUBECTL_BUILD_DATE="2018-07-26"
+ARG AWS_CLI_VERSION="1.16.96"
+ARG HELM_LATEST_VERSION="v2.17.0"
+ARG HELLM3_LATEST_VERSION="v3.12.2"
+
+RUN  apt-get update \
+  && apt-get upgrade -y \
+  && apt-get install -y curl \
+#  && apt-get install -y python3 \
+#  && apt-get install -y python3-pip \
+  && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+  && unzip awscliv2.zip && ./aws/install \
+#  && mkdir -p "${HOME}/.aws" \
+  && apt-get install -y gettext \
+  && wget https://get.helm.sh/helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz \
+  && tar -xvf helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz \
+  && mv linux-amd64/helm /usr/local/bin \
+  && rm -f /helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz \
+  && wget https://get.helm.sh/helm-${HELLM3_LATEST_VERSION}-linux-amd64.tar.gz \
+  && tar -xvf helm-${HELLM3_LATEST_VERSION}-linux-amd64.tar.gz \
+  && mv linux-amd64/helm /usr/local/bin/helm3 \
+  && rm -f /helm-${HELLM3_LATEST_VERSION}-linux-amd64.tar.gz
+
+RUN curl -L https://amazon-eks.s3-us-west-2.amazonaws.com/${KUBECTL_VERSION}/${KUBECTL_BUILD_DATE}/bin/linux/amd64/kubectl > /usr/local/bin/kubectl \
+    && chmod +x /usr/local/bin/kubectl
+
+# install aws-iam-authenticator
+RUN curl -L "https://amazon-eks.s3-us-west-2.amazonaws.com/${KUBECTL_VERSION}/${KUBECTL_BUILD_DATE}/bin/linux/amd64/aws-iam-authenticator" > /usr/local/bin/aws-iam-authenticator \
+    && chmod +x /usr/local/bin/aws-iam-authenticator
+
+ADD ensubstvars_helper.sh /usr/bin
+
+COPY env_var_helper_client.sh env_var_helper_client.rb ./
+RUN chmod +x env_var_helper_client.sh
+
+ENTRYPOINT ["./env_var_helper_client.sh"]
+
